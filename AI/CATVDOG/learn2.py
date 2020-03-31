@@ -1,11 +1,12 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.keras.models import Sequential
 from tensorflow.keras.callbacks import TensorBoard
+from tensorflow.keras.models import Sequential
 import numpy as np
 import pickle
 import time
+import gc
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(gpus[0],True)
@@ -29,6 +30,7 @@ for dense_layer in dense_layers:
     for layer_size in layer_sizes:
         for conv_layer in conv_layers:
             name = f"{dense_layer}-dense-{layer_size}-size-{conv_layer}-convlayers--{int(time.time())}"
+            gc.collect()
             tensorboard = TensorBoard(log_dir='logs/{}'.format(name))
 
             model = Sequential()
@@ -54,7 +56,6 @@ for dense_layer in dense_layers:
             model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
             model.fit(x, y, validation_split=0.3, batch_size=32, epochs=20, callbacks=[tensorboard])
-            tf.keras.backend.clear_session()
             model = None
             tensorboard = None
             # model.save('CATVDOG.model')
