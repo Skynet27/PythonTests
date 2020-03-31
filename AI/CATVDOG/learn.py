@@ -9,7 +9,7 @@ import pickle
 import cv2
 import os
 
-DATADIR = "../datasets/PetImages/"
+DATADIR = "../../datasets/PetImages/"
 CATEGORIES = ["Dog","Cat"]
 
 TRAINING_DATA = []
