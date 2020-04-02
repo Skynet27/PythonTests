@@ -22,16 +22,16 @@ y = np.array(y)
 
 x = x/255.0
 
-dense_layers = [0, 1, 2]
-layer_sizes = [32, 64]
-conv_layers = [1, 2, 3]
+dense_layers = [0]
+layer_sizes = [32]
+conv_layers = [2]
 
 for dense_layer in dense_layers:
     for layer_size in layer_sizes:
         for conv_layer in conv_layers:
-            name = f"{dense_layer}-dense-{layer_size}-size-{conv_layer}-convlayers--{int(time.time())}"
+            name = f"01-VS-{dense_layer}-dense-{layer_size}-size-{conv_layer}-convlayers--{int(time.time())}"
             gc.collect()
-            tensorboard = TensorBoard(log_dir='logs/{}'.format(name))
+            tensorboard = TensorBoard(log_dir='logsV/{}'.format(name))
 
             model = Sequential()
             model.add(Conv2D(layer_size, (3, 3), input_shape=x.shape[1:]))
@@ -55,7 +55,7 @@ for dense_layer in dense_layers:
 
             model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-            model.fit(x, y, validation_split=0.3, batch_size=32, epochs=20, callbacks=[tensorboard])
+            model.fit(x, y, validation_split=0.1, batch_size=32, epochs=10, callbacks=[tensorboard])
+            model.save(f'models/{name}.model')
             model = None
             tensorboard = None
-            # model.save('CATVDOG.model')
