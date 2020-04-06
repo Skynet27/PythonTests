@@ -9,9 +9,9 @@ with sr.Microphone() as source:
     print("Beszélhetsz:")
     audio = r1.listen(source)
     spc = r1.recognize_google(audio, language="hu-HU")
-    print(spc)
+    #print(spc)
 
-if (spc.lower() == "szevasssz öcsém") or (spc.lower() == "jarvis"):
+if (spc.lower() == "szevasz öcsém") or (spc.lower() == "jarvis") or (spc.lower() == "alexa"):
     with sr.Microphone() as source:
         print("Mondjad, miaz?")
         audio = r2.listen(source)
