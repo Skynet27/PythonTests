@@ -1,32 +1,44 @@
 import speech_recognition as sr
-import webbrowser as wb
+from gtts import gTTS
+import playsound
 
 # va = __import__("my-voice-analysis")
 
-r1, r2, r3 = sr.Recognizer(), sr.Recognizer(), sr.Recognizer()
+name = "szevasz"
+r1 = sr.Recognizer()
 
 
-def main():
+def get_background_noise():
     with sr.Microphone() as source:
+        r1.adjust_for_ambient_noise(source)
+
+
+def get_audio():
+    with sr.Microphone() as source:
+        audio = r1.listen(source)
+
         try:
-            r1.adjust_for_ambient_noise(source)
-            print("Beszélhetsz:")
-            audio = r1.listen(source)
-            scp = r1.recognize_google(audio, language="hu-HU")
-            if scp.lower() == "szevasz":
-                kuldd(scp)
-            else:
-                kuldd("Mondd újra:")
-        finally:
-            kuldd("reapeat")
+            return (r1.recognize_google(audio, language="hu-HU")).lower()
+        except:
+            return "hiba"
 
 
-def kuldd(arg):
-    if arg != "repeat":
-        print(arg)
-        main()
-    else:
-        main()
+def speak(text):
+    tts = gTTS(text=text, lang="hu")
+    tts.save("voice.mp3")
+    playsound.playsound("voice.mp3")
 
 
-main()
+while True:
+    get_background_noise()
+    print("Hallgatás...")
+    text = get_audio()
+    if text.count(name) > 0:
+        speak("Mit szeretnél?")
+        text = get_audio()
+        if "semmit" in text:
+            speak("Akkor hagylak is!")
+        else:
+            speak("Nem értettem.")
+    elif text == "hiba":
+        print("Hiba lépett fel.")
